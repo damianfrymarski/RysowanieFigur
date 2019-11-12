@@ -1,2 +1,2 @@
 # RysowanieFigur
-Przykład Refaktoryzacji Kodu na Zaawansowane Języki Programowania Uniwersytet Gdański
+Przykład refaktoryzacji kodu na zajęcia Zaawansowane Języki Programowania - Uniwersytet Gdański
