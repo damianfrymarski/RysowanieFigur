@@ -105,19 +105,8 @@ begin
 end;
 
 procedure TForm1.RysujFigureC;
-var
-  i,j : Integer;
-  linia : String;
 begin
-  linia :='';
-  for i := 0 to rozmiar do
-  begin
-      for j := rozmiar downto 0 do
-      begin
-        linia:=linia+znak;
-      end;
-      memo1.Lines.Add(linia);
-  end;
+
 end;
 
 end.
