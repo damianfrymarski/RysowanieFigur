@@ -21,9 +21,6 @@ type
     { Private declarations }
     znak : Char;
     rozmiar : Integer;
-    procedure RysujFigureA;
-    procedure RysujFigureB;
-    procedure RysujFigureC;
 
   public
     { Public declarations }
@@ -33,91 +30,33 @@ var
   Form1: TForm1;
 
 implementation
+uses Figura;
 
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
+var _fig : TShape;
 begin
   znak := '*';
   rozmiar := StrToInt(Edit1.Text);
   memo1.Lines.Clear;
-  if ComboBox1.ItemIndex=0 then RysujFigureA
-  else if ComboBox1.ItemIndex=1 then RysujFigureB
-  else if ComboBox1.ItemIndex=2 then RysujFigureC;
+  try
+    case ComboBox1.ItemIndex of
+    0 :   _fig := TShapeA.Create;
+    1 :   _fig := TShapeB.Create;
+    2 :   _fig := TShapeC.Create;
+  end;
+   _fig.SetSize(rozmiar);
+   _fig.Draw(memo1);
 
-
-end;
-
-procedure TForm1.RysujFigureA;
-var
-  i,j : Integer;
-  linia : string;
-begin
-  linia := '';
-
-  for i := 0 to rozmiar do
-  begin
-    linia :='';
-    for j:=0 to rozmiar do
-    begin
-      linia := linia + znak;
-    end;
-
-    memo1.Lines.Add(linia);
+  finally
+    _fig.Free;
   end;
 
 
 
-end;
-
-procedure TForm1.RysujFigureB;
-var
-  i,j : Integer;
-  linia : string;
-begin
-   linia := '';
-  for i:=0 to rozmiar do
-  begin
-    linia := linia + znak;
-  end;
-    memo1.Lines.Add(linia);
-    linia :='';
-
-  for i:=0 to rozmiar-2 do
-  begin
-    linia:='';
-    for j := 0 to rozmiar do
-      begin
-        if (j=0) or (j=rozmiar) then linia:=linia + znak
-        else linia:=linia+'  ';
-      end;
-    memo1.Lines.Add(linia);
-  end;
 
 
-  linia:='';
-  for i:=0 to rozmiar do
-  begin
-    linia := linia + znak;
-  end;
-    memo1.Lines.Add(linia);
-
-end;
-
-procedure TForm1.RysujFigureC;
-var
-  i,j : Integer;
-  linia : String;
-begin
-  linia :='';
-  for i := 0 to rozmiar do
-  begin
-      for j := rozmiar downto 0 do
-      begin
-        linia:=linia+znak;
-      end;
-      memo1.Lines.Add(linia);
-  end;
 end;
 
 end.
