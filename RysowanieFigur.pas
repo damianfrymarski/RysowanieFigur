@@ -7,16 +7,16 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
-  TForm1 = class(TForm)
+  TFormRysunek = class(TForm)
     Panel1: TPanel;
     Panel2: TPanel;
-    Memo1: TMemo;
-    Button1: TButton;
-    ComboBox1: TComboBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Edit1: TEdit;
-    procedure Button1Click(Sender: TObject);
+    memoRysunek: TMemo;
+    btnRysuj: TButton;
+    cbWyborFigur: TComboBox;
+    lblWybor: TLabel;
+    lblPodajRozmiar: TLabel;
+    edRozmiarFigury: TEdit;
+    procedure btnRysujClick(Sender: TObject);
   private
     { Private declarations }
     znak : Char;
@@ -27,30 +27,30 @@ type
   end;
 
 var
-  Form1: TForm1;
+  FormRysunek: TFormRysunek;
 
 implementation
 uses Figura;
 
 {$R *.dfm}
 
-procedure TForm1.Button1Click(Sender: TObject);
-var _fig : TShape;
+procedure TFormRysunek.btnRysujClick(Sender: TObject);
+var _fig : IShape;
 begin
   znak := '*';
-  rozmiar := StrToInt(Edit1.Text);
-  memo1.Lines.Clear;
+  rozmiar := StrToInt(edRozmiarFigury.Text);
+  memoRysunek.Lines.Clear;
   try
-    case ComboBox1.ItemIndex of
+    case cbWyborFigur.ItemIndex of
     0 :   _fig := TShapeA.Create;
     1 :   _fig := TShapeB.Create;
     2 :   _fig := TShapeC.Create;
   end;
    _fig.SetSize(rozmiar);
-   _fig.Draw(memo1);
+   _fig.Draw(memoRysunek);
 
   finally
-    _fig.Free;
+
   end;
 
 

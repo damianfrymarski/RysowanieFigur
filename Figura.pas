@@ -6,17 +6,24 @@ uses Vcl.StdCtrls;
 
 
 type
-TShape = class
-private
-s : Integer;
-znak : char;
+IShape = interface ['{DF2A928C-EB97-4431-8056-E772D660D356}']
+procedure Draw(memo : TMemo);
+procedure SetSize(sizeFigure : Integer);
+end;
 
+type
+TShape = class(TInterfacedObject, IShape)
+private
+sizeFigure : Integer;
+brush : char;
+space : char;
+function DrawLine(size : Integer; brush : char) : String;
 
 public
   Constructor Create;
   Destructor Destroy;
   procedure Draw(memo : TMemo); virtual;
-  procedure SetSize(s : Integer);
+  procedure SetSize(sizeFigure : Integer);
 end;
 
 type
@@ -34,32 +41,14 @@ end;
 
 implementation
 
-{ TShapeC }
-
-procedure TShapeC.Draw(memo : TMemo);
-var
-  i,j : Integer;
-  linia : String;
-begin
-  linia :='';
-  for i := 0 to s do
-  begin
-      for j := s downto 0 do
-      begin
-        linia:=linia+znak;
-      end;
-      memo.Lines.Add(linia);
-  end;
-
-end;
-
 { TShape }
 
 constructor TShape.Create;
 begin
   inherited;
-  s := 10;
-  znak := '*';
+  sizeFigure := 10;
+  brush := '*';
+  space := ' ';
 end;
 
 destructor TShape.Destroy;
@@ -69,71 +58,65 @@ end;
 
 procedure TShape.Draw(memo : TMemo);
 begin
-
+  memo.Lines.Add('virtual')
 end;
 
-procedure TShape.SetSize(s: Integer);
+function TShape.DrawLine(size : Integer; brush : char) : String;
+var
+i : Integer;
 begin
-  self.s := s;
+  result:='';
+  for i:=0 to size do
+  begin
+    result := result + brush;
+  end;
+end;
+
+
+procedure TShape.SetSize(sizeFigure: Integer);
+begin
+  self.sizeFigure := sizeFigure;
+end;
+
+
+{ TShapeA }
+
+procedure TShapeA.Draw(memo : TMemo);
+  var
+  i : Integer;
+begin
+  for i := 0 to sizeFigure do
+  begin
+    memo.Lines.Add(DrawLine(sizeFigure,brush));
+  end;
 end;
 
 { TShapeB }
 
 procedure TShapeB.Draw(memo : TMemo);
 var
-  i,j : Integer;
-  linia : string;
+  i : Integer;
 begin
-   linia := '';
-  for i:=0 to s do
+  memo.Lines.Add(DrawLine(sizeFigure, Self.brush));
+  for i:=0 to sizeFigure-2 do
   begin
-    linia := linia + znak;
+    memo.Lines.Add(DrawLine(0,brush)+DrawLine(sizeFigure-2,space)+DrawLine(sizeFigure-4,space)+DrawLine(0,brush));
   end;
-    memo.Lines.Add(linia);
-    linia :='';
+  memo.Lines.Add(DrawLine(sizeFigure, Self.brush));
+end;
 
-  for i:=0 to s-2 do
+{ TShapeC }
+
+procedure TShapeC.Draw(memo : TMemo);
+var
+  i : Integer;
+begin
+  for i := 0 to sizeFigure do
   begin
-    linia:='';
-    for j := 0 to s do
-      begin
-        if (j=0) or (j=s) then linia:=linia + znak
-        else linia:=linia+'  ';
-      end;
-    memo.Lines.Add(linia);
+    memo.Lines.Add(DrawLine(sizeFigure-i,brush));
   end;
-
-
-  linia:='';
-  for i:=0 to s do
-  begin
-    linia := linia + znak;
-  end;
-    memo.Lines.Add(linia);
 
 end;
 
-{ TShapeA }
-
-procedure TShapeA.Draw(memo : TMemo);
-  var
-  i,j : Integer;
-  linia : string;
-begin
-  linia := '';
-
-  for i := 0 to s do
-  begin
-    linia :='';
-    for j:=0 to s do
-    begin
-      linia := linia + znak;
-    end;
-
-    memo.Lines.Add(linia);
-  end;
-
-
-end;
 
 end.
