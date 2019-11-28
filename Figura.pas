@@ -2,13 +2,14 @@ unit Figura;
 
 interface
 
-uses Vcl.StdCtrls;
+uses Vcl.StdCtrls, Vcl.Graphics;
 
 
 type
 IShape = interface ['{DF2A928C-EB97-4431-8056-E772D660D356}']
 procedure Draw(memo : TMemo);
 procedure SetSize(sizeFigure : Integer);
+procedure SetColor(memo : TMemo; color : TColor);
 end;
 
 type
@@ -24,6 +25,8 @@ public
   Destructor Destroy;
   procedure Draw(memo : TMemo); virtual;
   procedure SetSize(sizeFigure : Integer);
+  procedure SetBrush(brush : char);
+  procedure SetColor(memo : TMemo; color : TColor);
 end;
 
 type
@@ -36,6 +39,10 @@ TShapeB = class(TShape)
 end;
 
 TShapeC = class(TShape)
+  procedure Draw(memo : TMemo); override;
+end;
+
+TShapeD = class(TShape)
   procedure Draw(memo : TMemo); override;
 end;
 
@@ -78,6 +85,15 @@ begin
   self.sizeFigure := sizeFigure;
 end;
 
+procedure TShape.SetBrush(brush: char);
+begin
+  self.brush := brush;
+end;
+
+procedure TShape.SetColor(memo: TMemo; color: TColor);
+begin
+  memo.Font.Color := color;
+end;
 
 { TShapeA }
 
@@ -118,5 +134,20 @@ begin
 
 end;
 
+procedure TShapeD.Draw(memo : TMemo);
+var
+  i : Integer;
+begin
+  for i := 0 to sizeFigure do
+  begin
+    memo.Lines.Add(DrawLine(sizeFigure-i,brush)+DrawLine(i*4,space)+DrawLine(sizeFigure-i, brush) );
+  end;
+
+  for i := sizeFigure downto 0 do
+  begin
+    memo.Lines.Add(DrawLine(sizeFigure-i,brush)+DrawLine(i*4,space)+DrawLine(sizeFigure-i, brush));
+  end;
+
+end;
 
 end.

@@ -17,6 +17,7 @@ type
     lblPodajRozmiar: TLabel;
     edRozmiarFigury: TEdit;
     procedure btnRysujClick(Sender: TObject);
+    procedure UstawDomyslne;
   private
     { Private declarations }
     znak : Char;
@@ -37,16 +38,16 @@ uses Figura;
 procedure TFormRysunek.btnRysujClick(Sender: TObject);
 var _fig : IShape;
 begin
-  znak := '*';
-  rozmiar := StrToInt(edRozmiarFigury.Text);
-  memoRysunek.Lines.Clear;
+   UstawDomyslne;
   try
     case cbWyborFigur.ItemIndex of
     0 :   _fig := TShapeA.Create;
     1 :   _fig := TShapeB.Create;
     2 :   _fig := TShapeC.Create;
-  end;
+    3 :   _fig := TShapeD.Create;
+    end;
    _fig.SetSize(rozmiar);
+   _fig.SetColor(memoRysunek,clRed);
    _fig.Draw(memoRysunek);
 
   finally
@@ -57,6 +58,13 @@ begin
 
 
 
+end;
+
+procedure TFormRysunek.UstawDomyslne;
+begin
+  znak := '*';
+  rozmiar := StrToInt(edRozmiarFigury.Text);
+  memoRysunek.Lines.Clear;
 end;
 
 end.
