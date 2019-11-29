@@ -4,12 +4,15 @@ interface
 
 uses Vcl.StdCtrls, Vcl.Graphics;
 
+type
+TShapes = (fullSquare, frameSquare, triangle, diamond);
 
 type
 IShape = interface ['{DF2A928C-EB97-4431-8056-E772D660D356}']
-procedure Draw(memo : TMemo);
+procedure Draw;
 procedure SetSize(sizeFigure : Integer);
-procedure SetColor(memo : TMemo; color : TColor);
+procedure SetColor(color : TColor);
+procedure SetCanvas(memo : TMemo);
 end;
 
 type
@@ -18,32 +21,39 @@ private
 sizeFigure : Integer;
 brush : char;
 space : char;
+memo  : TMemo;
 function DrawLine(size : Integer; brush : char) : String;
 
 public
   Constructor Create;
   Destructor Destroy;
-  procedure Draw(memo : TMemo); virtual;
+  procedure Draw; virtual;
   procedure SetSize(sizeFigure : Integer);
   procedure SetBrush(brush : char);
-  procedure SetColor(memo : TMemo; color : TColor);
+  procedure SetColor(color : TColor);
+  procedure SetCanvas(memo : Tmemo);
 end;
 
 type
-TShapeA = class(TShape)
-  procedure Draw(memo : TMemo); override;
+TShapeFullSquare = class(TShape)
+  procedure Draw; override;
 end;
 
-TShapeB = class(TShape)
-  procedure Draw(memo : TMemo); override;
+TShapeFrameSquare = class(TShape)
+  procedure Draw; override;
 end;
 
-TShapeC = class(TShape)
-  procedure Draw(memo : TMemo); override;
+TShapeTriangle = class(TShape)
+  procedure Draw; override;
 end;
 
-TShapeD = class(TShape)
-  procedure Draw(memo : TMemo); override;
+TShapeDiamond = class(TShape)
+  procedure Draw; override;
+end;
+
+type
+TShapeFactory = class
+  function CreateShape(shape : TShapes) : IShape;
 end;
 
 implementation
@@ -63,7 +73,7 @@ begin
  inherited;
 end;
 
-procedure TShape.Draw(memo : TMemo);
+procedure TShape.Draw;
 begin
   memo.Lines.Add('virtual')
 end;
@@ -90,14 +100,19 @@ begin
   self.brush := brush;
 end;
 
-procedure TShape.SetColor(memo: TMemo; color: TColor);
+procedure TShape.SetCanvas(memo: Tmemo);
+begin
+  self.memo := memo;
+end;
+
+procedure TShape.SetColor(color: TColor);
 begin
   memo.Font.Color := color;
 end;
 
-{ TShapeA }
+{ TShapeFullSquare }
 
-procedure TShapeA.Draw(memo : TMemo);
+procedure TShapeFullSquare.Draw;
   var
   i : Integer;
 begin
@@ -109,7 +124,7 @@ end;
 
 { TShapeB }
 
-procedure TShapeB.Draw(memo : TMemo);
+procedure TShapeFrameSquare.Draw;
 var
   i : Integer;
 begin
@@ -121,9 +136,9 @@ begin
   memo.Lines.Add(DrawLine(sizeFigure, Self.brush));
 end;
 
-{ TShapeC }
+{ TShapeTriangle }
 
-procedure TShapeC.Draw(memo : TMemo);
+procedure TShapeTriangle.Draw;
 var
   i : Integer;
 begin
@@ -134,7 +149,9 @@ begin
 
 end;
 
-procedure TShapeD.Draw(memo : TMemo);
+{ TShapeDiamond }
+
+procedure TShapeDiamond.Draw;
 var
   i : Integer;
 begin
@@ -148,6 +165,18 @@ begin
     memo.Lines.Add(DrawLine(sizeFigure-i,brush)+DrawLine(i*4,space)+DrawLine(sizeFigure-i, brush));
   end;
 
+end;
+
+{ TShapeFactory }
+
+function TShapeFactory.CreateShape(shape: TShapes): IShape;
+begin
+  case shape of
+    TShapes.fullSquare  :  result := TShapeFullSquare.Create;
+    TShapes.frameSquare :  result := TShapeFrameSquare.Create;
+    TShapes.triangle    :  result := TShapeTriangle.Create;
+    TShapes.diamond     :  result := TShapeDiamond.Create;
+  end;
 end;
 
 end.

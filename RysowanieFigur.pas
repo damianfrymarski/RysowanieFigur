@@ -10,14 +10,14 @@ type
   TFormRysunek = class(TForm)
     Panel1: TPanel;
     Panel2: TPanel;
-    memoRysunek: TMemo;
-    btnRysuj: TButton;
-    cbWyborFigur: TComboBox;
-    lblWybor: TLabel;
-    lblPodajRozmiar: TLabel;
-    edRozmiarFigury: TEdit;
-    procedure btnRysujClick(Sender: TObject);
-    procedure UstawDomyslne;
+    memoCanvas: TMemo;
+    btnDraw: TButton;
+    cbChoiceShape: TComboBox;
+    lblChoice: TLabel;
+    lblGetSize: TLabel;
+    edSize: TEdit;
+    procedure btnDrawClick(Sender: TObject);
+    procedure SetDefault;
   private
     { Private declarations }
     znak : Char;
@@ -35,24 +35,25 @@ uses Figura;
 
 {$R *.dfm}
 
-procedure TFormRysunek.btnRysujClick(Sender: TObject);
-var _fig : IShape;
+procedure TFormRysunek.btnDrawClick(Sender: TObject);
+var _shape : IShape;
+var _ShapeFactory : TShapeFactory;
 begin
-   UstawDomyslne;
-  try
-    case cbWyborFigur.ItemIndex of
-    0 :   _fig := TShapeA.Create;
-    1 :   _fig := TShapeB.Create;
-    2 :   _fig := TShapeC.Create;
-    3 :   _fig := TShapeD.Create;
-    end;
-   _fig.SetSize(rozmiar);
-   _fig.SetColor(memoRysunek,clRed);
-   _fig.Draw(memoRysunek);
+   SetDefault;
+   try
+    _ShapeFactory := TShapeFactory.Create;
 
-  finally
+    _shape := _ShapeFactory.CreateShape(TShapes(cbChoiceShape.ItemIndex));
+    _shape.SetCanvas(memoCanvas);
+    _shape.SetSize(rozmiar);
+    _shape.SetColor(clRed);
+    _shape.Draw;
 
-  end;
+   finally
+    _ShapeFactory.Free;
+   end;
+
+
 
 
 
@@ -60,11 +61,11 @@ begin
 
 end;
 
-procedure TFormRysunek.UstawDomyslne;
+procedure TFormRysunek.SetDefault;
 begin
   znak := '*';
-  rozmiar := StrToInt(edRozmiarFigury.Text);
-  memoRysunek.Lines.Clear;
+  rozmiar := StrToInt(edSize.Text);
+  memoCanvas.Lines.Clear;
 end;
 
 end.
