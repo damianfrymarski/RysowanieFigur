@@ -8,21 +8,33 @@ type
 TShapes = (fullSquare, frameSquare, triangle, diamond);
 
 type
-IShape = interface ['{DF2A928C-EB97-4431-8056-E772D660D356}']
-procedure Draw;
-procedure SetSize(sizeFigure : Integer);
-procedure SetColor(color : TColor);
-procedure SetCanvas(memo : TMemo);
+TShapeArguments = record
+size : integer;
+brush : char;
+color : TColor;
+memo : TMemo;
 end;
 
 type
-TShape = class(TInterfacedObject, IShape)
+IShape = interface ['{DF2A928C-EB97-4431-8056-E772D660D356}']
+procedure Draw;
+procedure SetSize(sizeFigure : Integer);
+procedure SetBrush(brush : char);
+procedure SetColor(color : TColor);
+procedure SetCanvas(memo : TMemo);
+procedure SetArguments(Arguments : TShapeArguments);
+end;
+
+type
+TShape = class abstract(TInterfacedObject, IShape)
 private
 sizeFigure : Integer;
 brush : char;
 space : char;
 memo  : TMemo;
+color : TColor;
 function DrawLine(size : Integer; brush : char) : String;
+procedure SetMemo;
 
 public
   Constructor Create;
@@ -32,6 +44,7 @@ public
   procedure SetBrush(brush : char);
   procedure SetColor(color : TColor);
   procedure SetCanvas(memo : Tmemo);
+  procedure SetArguments(Arguments : TShapeArguments);
 end;
 
 type
@@ -83,7 +96,7 @@ var
 i : Integer;
 begin
   result:='';
-  for i:=0 to size do
+  for i:=0 to size-1 do
   begin
     result := result + brush;
   end;
@@ -94,6 +107,7 @@ procedure TShape.SetSize(sizeFigure: Integer);
 begin
   self.sizeFigure := sizeFigure;
 end;
+
 
 procedure TShape.SetBrush(brush: char);
 begin
@@ -107,7 +121,22 @@ end;
 
 procedure TShape.SetColor(color: TColor);
 begin
-  memo.Font.Color := color;
+  self.color := color;
+end;
+
+
+procedure TShape.SetArguments(Arguments: TShapeArguments);
+begin
+  self.sizeFigure := Arguments.size;
+  self.brush  := Arguments.brush;
+  self.memo   := Arguments.memo;
+  self.color  := Arguments.color;
+  SetMemo;
+end;
+
+procedure TShape.SetMemo;
+begin
+  memo.Font.Color := self.color;
 end;
 
 { TShapeFullSquare }
@@ -116,22 +145,24 @@ procedure TShapeFullSquare.Draw;
   var
   i : Integer;
 begin
-  for i := 0 to sizeFigure do
+  for i := 0 to sizeFigure-1 do
   begin
     memo.Lines.Add(DrawLine(sizeFigure,brush));
   end;
 end;
 
-{ TShapeB }
+{ TShapeFrameSquare }
 
 procedure TShapeFrameSquare.Draw;
 var
   i : Integer;
+  halfSize : integer;
 begin
+  halfSize := Round(sizeFigure / 2);
   memo.Lines.Add(DrawLine(sizeFigure, Self.brush));
   for i:=0 to sizeFigure-2 do
   begin
-    memo.Lines.Add(DrawLine(0,brush)+DrawLine(sizeFigure-2,space)+DrawLine(sizeFigure-4,space)+DrawLine(0,brush));
+    memo.Lines.Add(DrawLine(1,self.brush)+DrawLine(sizeFigure+halfSize,self.space)+DrawLine(1,self.brush));
   end;
   memo.Lines.Add(DrawLine(sizeFigure, Self.brush));
 end;
@@ -142,9 +173,9 @@ procedure TShapeTriangle.Draw;
 var
   i : Integer;
 begin
-  for i := 0 to sizeFigure do
+  for i := 0 to sizeFigure-1 do
   begin
-    memo.Lines.Add(DrawLine(sizeFigure-i,brush));
+    memo.Lines.Add(DrawLine(sizeFigure-i,self.brush));
   end;
 
 end;
@@ -155,14 +186,14 @@ procedure TShapeDiamond.Draw;
 var
   i : Integer;
 begin
-  for i := 0 to sizeFigure do
+  for i := 0 to sizeFigure-1 do
   begin
-    memo.Lines.Add(DrawLine(sizeFigure-i,brush)+DrawLine(i*4,space)+DrawLine(sizeFigure-i, brush) );
+    memo.Lines.Add(DrawLine(sizeFigure-i,self.brush)+DrawLine(i*4,self.space)+DrawLine(sizeFigure-i, self.brush) );
   end;
 
-  for i := sizeFigure downto 0 do
+  for i := sizeFigure-1 downto 0 do
   begin
-    memo.Lines.Add(DrawLine(sizeFigure-i,brush)+DrawLine(i*4,space)+DrawLine(sizeFigure-i, brush));
+    memo.Lines.Add(DrawLine(sizeFigure-i,self.brush)+DrawLine(i*4,self.space)+DrawLine(sizeFigure-i, self.brush));
   end;
 
 end;

@@ -20,8 +20,9 @@ type
     procedure SetDefault;
   private
     { Private declarations }
-    znak : Char;
-    rozmiar : Integer;
+    brush : Char;
+    size : Integer;
+    color : TColor;
 
   public
     { Public declarations }
@@ -36,36 +37,38 @@ uses Figura;
 {$R *.dfm}
 
 procedure TFormRysunek.btnDrawClick(Sender: TObject);
-var _shape : IShape;
-var _ShapeFactory : TShapeFactory;
+var
+_shape : IShape;
+_ShapeFactory : TShapeFactory;
+_ShapeArguments : TShapeArguments;
 begin
    SetDefault;
+
+   _ShapeArguments.size   := size;
+   _ShapeArguments.brush  := brush;
+   _ShapeArguments.color  := color;
+   _ShapeArguments.memo   := memoCanvas;
+
+
    try
     _ShapeFactory := TShapeFactory.Create;
-
     _shape := _ShapeFactory.CreateShape(TShapes(cbChoiceShape.ItemIndex));
-    _shape.SetCanvas(memoCanvas);
-    _shape.SetSize(rozmiar);
-    _shape.SetColor(clRed);
+    _shape.SetArguments(_shapeArguments);
     _shape.Draw;
 
    finally
     _ShapeFactory.Free;
    end;
 
-
-
-
-
-
-
 end;
 
 procedure TFormRysunek.SetDefault;
 begin
-  znak := '*';
-  rozmiar := StrToInt(edSize.Text);
+  brush := '*';
+  size := StrToInt(edSize.Text);
+  color := clRed;
   memoCanvas.Lines.Clear;
+
 end;
 
 end.
